@@ -26,7 +26,7 @@ This is a Laravel-based PHP application. The project has been dockerized for eas
 
 3. Build and start the Docker containers:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 4. The entrypoint script will automatically:
@@ -37,7 +37,7 @@ This is a Laravel-based PHP application. The project has been dockerized for eas
 
 5. To run migrations manually (if needed):
    ```bash
-   docker-compose exec app php artisan migrate
+   docker compose exec app php artisan migrate
    ```
 
 ### Accessing the Application
@@ -70,6 +70,6 @@ This Docker configuration uses non-standard ports:
 ## Troubleshooting
 
 - If you encounter database connection issues, make sure the correct credentials are in the `.env` file
-- To check container logs: `docker-compose logs -f app`
-- To restart a specific service: `docker-compose restart <service-name>`
-- If you need to reset everything and start fresh: `docker-compose down -v` followed by `docker-compose up -d` 
+- To check container logs: `docker compose logs -f app`
+- To restart a specific service: `docker compose restart <service-name>`
+- If you need to reset everything and start fresh: `docker compose down -v` followed by `docker compose up -d` 

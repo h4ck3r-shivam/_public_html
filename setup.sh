@@ -34,8 +34,8 @@ chmod +x docker/healthcheck.sh
 
 # Start Docker containers
 echo "Starting Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 echo "Setup complete! Your Laravel application should now be running."
-echo "To check container status: docker-compose ps"
-echo "To view logs: docker-compose logs -f app" 
+echo "To check container status: docker compose ps"
+echo "To view logs: docker compose logs -f app" 
