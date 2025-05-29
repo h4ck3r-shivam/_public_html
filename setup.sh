@@ -3,6 +3,10 @@
 # Setup script for Laravel Docker deployment
 echo "Setting up Laravel Docker deployment..."
 
+# Clean up previous containers and volumes
+echo "Cleaning up previous containers and volumes..."
+docker compose down --volumes || true
+
 # Create .env.example file if not exists
 if [ ! -f .env.example ] && [ -f ".env copy" ]; then
     echo "Creating .env.example file from .env copy..."
@@ -38,9 +42,10 @@ echo "Setting permissions for scripts..."
 chmod +x docker/entrypoint.sh
 chmod +x docker/healthcheck.sh
 
-# Start Docker containers with forced rebuild
-echo "Starting Docker containers..."
-docker compose up -d --build --force-recreate
+# Build and start Docker containers with forced rebuild
+echo "Building and starting Docker containers..."
+docker compose build --no-cache
+docker compose up -d
 
 echo "Setup complete! Your Laravel application should now be running."
 echo "To check container status: docker compose ps"

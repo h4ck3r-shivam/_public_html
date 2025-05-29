@@ -37,6 +37,9 @@ COPY composer.json composer.lock /tmp/composer-install/
 WORKDIR /tmp/composer-install
 RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
 
+# Fix git ownership issue
+RUN git config --global --add safe.directory /tmp/composer-install || true
+
 # Copy the rest of the application
 WORKDIR /var/www/html
 COPY . .
@@ -44,11 +47,11 @@ COPY . .
 # Copy vendor directory from temp location
 RUN cp -r /tmp/composer-install/vendor /var/www/html/
 
-# Generate autoloader but skip scripts to avoid database access
-RUN composer dump-autoload --no-interaction --no-dev --optimize-autoloader --no-scripts
-
-# Fix git ownership issue
+# Fix git ownership issue for main directory
 RUN git config --global --add safe.directory /var/www/html || true
+
+# Generate autoloader but skip scripts to avoid database access
+RUN composer dump-autoload --no-interaction --no-dev --optimize --no-scripts
 
 # Make entrypoint and healthcheck scripts executable
 RUN chmod +x docker/entrypoint.sh
