@@ -38,9 +38,9 @@ echo "Setting permissions for scripts..."
 chmod +x docker/entrypoint.sh
 chmod +x docker/healthcheck.sh
 
-# Start Docker containers
+# Start Docker containers with forced rebuild
 echo "Starting Docker containers..."
-docker compose up -d
+docker compose up -d --build --force-recreate
 
 echo "Setup complete! Your Laravel application should now be running."
 echo "To check container status: docker compose ps"

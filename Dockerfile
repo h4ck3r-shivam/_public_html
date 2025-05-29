@@ -27,14 +27,32 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy existing application directory contents
+# Create a temp directory for composer dependencies
+RUN mkdir -p /tmp/composer-install
+
+# First copy only the composer files
+COPY composer.json composer.lock /tmp/composer-install/
+
+# Install dependencies without running scripts or accessing the database
+WORKDIR /tmp/composer-install
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
+
+# Copy the rest of the application
+WORKDIR /var/www/html
 COPY . .
 
-# Make entrypoint script executable
-RUN chmod +x docker/entrypoint.sh
+# Copy vendor directory from temp location
+RUN cp -r /tmp/composer-install/vendor /var/www/html/
 
-# Install dependencies
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+# Generate autoloader but skip scripts to avoid database access
+RUN composer dump-autoload --no-interaction --no-dev --optimize-autoloader --no-scripts
+
+# Fix git ownership issue
+RUN git config --global --add safe.directory /var/www/html || true
+
+# Make entrypoint and healthcheck scripts executable
+RUN chmod +x docker/entrypoint.sh
+RUN chmod +x docker/healthcheck.sh
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html
@@ -46,9 +64,6 @@ RUN a2enmod rewrite
 
 # Update ports.conf to listen on the non-standard port
 RUN sed -i 's/Listen 80$/Listen 8765/g' /etc/apache2/ports.conf
-
-# Make healthcheck script executable
-RUN chmod +x docker/healthcheck.sh
 
 # Set up healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 CMD ["/var/www/html/docker/healthcheck.sh"]
