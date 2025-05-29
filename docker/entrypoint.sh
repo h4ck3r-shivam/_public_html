@@ -11,7 +11,7 @@ cd /var/www/html
 # Create .env file if it doesn't exist
 if [ ! -f .env ]; then
     echo "Creating .env file..."
-    cp .env.example .env
+    cp ".env copy" .env
 fi
 
 # Generate application key

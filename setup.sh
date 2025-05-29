@@ -3,10 +3,16 @@
 # Setup script for Laravel Docker deployment
 echo "Setting up Laravel Docker deployment..."
 
+# Create .env.example file if not exists
+if [ ! -f .env.example ] && [ -f ".env copy" ]; then
+    echo "Creating .env.example file from .env copy..."
+    cp ".env copy" .env.example
+fi
+
 # Create .env file if not exists
 if [ ! -f .env ]; then
     echo "Creating .env file..."
-    cp .env.copy .env
+    cp ".env copy" .env
 
     # Update DB connection details for Docker
     sed -i 's/DB_HOST=localhost/DB_HOST=db/g' .env

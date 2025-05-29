@@ -1,5 +1,4 @@
 # For more information: https://laravel.com/docs/sail
-version: '3'
 services:
     app:
         build:
@@ -55,7 +54,7 @@ services:
         container_name: mailhog
         ports:
             - "10260:1025"
-            - "80260:8025"
+            - "8026:8025"
         networks:
             - app-network
 
